@@ -5,11 +5,11 @@ void decode_number();
 void decode_string();
 Element* decode();
 int main(){
-    char * filename="demo.txt";
+    char * filename="../res/demo.txt";
     char * data=read(filename);
     set_buff(data);
     struct  Element* e= decode();
-    printf("The number is %d\n",e->value.num);
+    printf("The string is %s\n",e->value.str);
     return 0;
 }
 

@@ -34,6 +34,7 @@ struct Element* decode(){
             break;
 
         default:
+            pos--;
             e=decode_string();
             break;
     }
