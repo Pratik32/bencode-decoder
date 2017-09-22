@@ -12,6 +12,7 @@ char    curr_byte;
 
 Element* decode_string();
 struct Element* decode_number();
+struct List* decode_list();
 char get_next_byte();
 void set_buff(char*);
 
@@ -79,6 +80,35 @@ struct Element* decode_number(){
     e->type=INT;
     e->value.num=res;
     return e;
+
+}
+
+struct List* decode_list(){
+    List* start=(List*)malloc(sizeof(List));
+    Element* e=NULL;
+    curr_byte=get_next_byte();
+    if(curr_byte!='e'){
+        pos--;
+        e=decode();
+        start->elements=e;
+        start->next=NULL;
+    }else{
+        return start;
+    }
+    List* prev=start;
+    List* curr=NULL;
+
+    while((curr_byte=get_next_byte())!='e'){
+        e=decode();
+        curr=(List*)malloc(sizeof(List));
+        curr->elements=e;
+        curr->next=NULL;
+        prev->next=curr;
+        prev=curr;
+    }
+
+
+    return start;
 
 }
 char get_next_byte(){
