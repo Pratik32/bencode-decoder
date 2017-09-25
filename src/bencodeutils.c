@@ -66,8 +66,7 @@ Element* decode_string(){
     return e;
 }
 
-struct Element* decode_number(){
-    printf("Inside decode_number\n");    
+struct Element* decode_number(){    
     curr_byte=get_next_byte();
     int curr=curr_byte-'0';
     long long res=curr;
