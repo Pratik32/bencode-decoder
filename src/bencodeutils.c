@@ -12,7 +12,7 @@ char    curr_byte;
 
 Element* decode_string();
 struct Element* decode_number();
-struct List* decode_list();
+struct Element* decode_list();
 char get_next_byte();
 void set_buff(char*);
 
@@ -27,14 +27,17 @@ struct Element* decode(){
 
             break;
         case 'i':
+            printf("Number \n");
             e=decode_number();
             break;
 
         case 'l':
-
+            printf("List \n");
+            e=decode_list();
             break;
 
         default:
+            printf("String \n");
             pos--;
             e=decode_string();
             break;
@@ -45,6 +48,7 @@ struct Element* decode(){
 }
 
 Element* decode_string(){
+    printf("Inside decode_string\n");
     Element* number =decode_number();
     long long strlen=number->value.num;
     int i=0;
@@ -83,9 +87,11 @@ struct Element* decode_number(){
 
 }
 
-struct List* decode_list(){
+struct Element* decode_list(){
+    printf("Inside decode_list\n"); 
     List* start=(List*)malloc(sizeof(List));
     Element* e=NULL;
+    Element* result=(Element*)malloc(sizeof(Element));
     curr_byte=get_next_byte();
     if(curr_byte!='e'){
         pos--;
@@ -93,12 +99,15 @@ struct List* decode_list(){
         start->elements=e;
         start->next=NULL;
     }else{
-        return start;
+        result->type=LIST;
+        result->value.list=NULL;
+        return result;
     }
     List* prev=start;
     List* curr=NULL;
 
     while((curr_byte=get_next_byte())!='e'){
+        pos--;
         e=decode();
         curr=(List*)malloc(sizeof(List));
         curr->elements=e;
@@ -107,8 +116,9 @@ struct List* decode_list(){
         prev=curr;
     }
 
-
-    return start;
+    result->type=LIST;
+    result->value.list=start;
+    return result;
 
 }
 char get_next_byte(){

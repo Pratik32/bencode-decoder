@@ -9,7 +9,12 @@ int main(){
     char * data=read(filename);
     set_buff(data);
     struct  Element* e= decode();
-    printf("The string is %s\n",e->value.str);
+    List* start=e->value.list;
+    Element* number=start->elements;
+    printf("Number is %d\n",number->value.num);
+    List* end=start->next;
+    Element* string=end->elements;
+    printf("String is %s\n",string->value.str);
     return 0;
 }
 
