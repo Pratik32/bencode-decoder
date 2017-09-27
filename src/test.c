@@ -10,11 +10,17 @@ int main(){
     set_buff(data);
     struct  Element* e= decode();
     List* start=e->value.list;
-    Element* number=start->elements;
-    printf("Number is %d\n",number->value.num);
-    List* end=start->next;
-    Element* string=end->elements;
-    printf("String is %s\n",string->value.str);
+
+    while(start!=NULL){
+        if(start->elements->type==STRING){
+            printf("The string is: %s\n",start->elements->value.str);
+        }else{
+        
+            printf("The number is:%lld\n",start->elements->value.num);
+        }
+
+        start=start->next;
+    }
     return 0;
 }
 

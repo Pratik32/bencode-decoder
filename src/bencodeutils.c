@@ -86,7 +86,7 @@ struct Element* decode_number(){
         curr=curr_byte-'0';
         prev=res;
     }
-    printf("The number is: %d\n",res);
+    printf("The number is: %lld\n",res);
     struct Element* e=(Element*)malloc(sizeof(Element));
     e->type=INT;
     e->value.num=res;
