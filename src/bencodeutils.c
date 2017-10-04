@@ -19,8 +19,9 @@ char    curr_byte;
 //  Function declarations.
 
 Element* decode_string();
-struct Element* decode_number();
-struct Element* decode_list();
+Element* decode_number();
+Element* decode_list();
+Element* decode_dictionary();
 char get_next_byte();
 void set_buff(char*);
 
@@ -32,7 +33,7 @@ struct Element* decode(){
     struct Element* e;
     switch(c){
         case 'd':
-
+            
             break;
         case 'i':
             printf("Number \n");
@@ -55,6 +56,23 @@ struct Element* decode(){
 
 }
 
+Element* decode_dictionary(){
+    Dict* start =(Dict*)malloc(sizeof(Dict));
+
+    curr_byte=get_next_byte();
+    if(curr_byte=='e'){
+        
+    
+    
+    }
+    printf("Inside decode_dictionary()\n");
+
+    
+    
+
+
+
+}
 Element* decode_string(){
     printf("Inside decode_string\n");
     Element* number =decode_number();
