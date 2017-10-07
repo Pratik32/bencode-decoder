@@ -12,11 +12,11 @@ char* read(char* filename){
 	filelen=ftell(file);
 	rewind(file);
 	printf("file length is:%ld\n",filelen);
-	buff=(char*)malloc((filelen+1)*sizeof(char));
-	fread(buff,filelen+1,1,file);
-	buff[filelen+1]='\0';
+	buff=(char*)malloc((filelen)*sizeof(char));
+	fread(buff,filelen-1,1,file);
+	buff[filelen]='\0';
 	fclose(file);
 	//char c=*buff;
-    printf("utils.c:read() returning following buffer:\n%s",buff);
+    printf("utils.c:read() returning following buffer:\n%s\n",buff);
 	return buff;
 }

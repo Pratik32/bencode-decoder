@@ -34,7 +34,7 @@ struct Element* decode(){
     switch(c){
         case 'd':
             printf("Dictionary\n");
-            e=decode();
+            e=decode_dictionary();
             break;
         case 'i':
             printf("Number \n");
@@ -69,18 +69,18 @@ Element* decode_dictionary(){
     Dict*    curr;
 
     curr_byte=get_next_byte();
-    if(curr_byte=='e'){
-        result->type=DICT;
-        return result;
-
-    }else{
-
+    if(curr_byte!='e'){
+        pos--;
         str_e=decode();
         key=str_e->value.str;
+        printf("key is %s %c\n",key,curr_byte);
         value=decode();
         start->key=key;
         start->value=value;
         result->type=DICT; 
+    }else{
+        result->type=DICT;
+        return result;
 
     }
     prev=start;
@@ -112,7 +112,7 @@ Element* decode_string(){
         i++;
     }
     str[i]='\0';
-    printf("String is %s \n",str);
+    printf("String is %s\n",str);
     Element* e=(Element*)malloc(sizeof(Element));
     e->type=STRING;
     e->value.str=str;
@@ -182,7 +182,6 @@ char get_next_byte(){
 
 }
 void set_buff(char * buff){
-    printf("Inside set_buff\n");
+    printf("Buffer set with size %d\n",strlen(buff));
     data=buff;
-
 }

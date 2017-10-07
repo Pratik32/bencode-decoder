@@ -5,22 +5,24 @@ void decode_number();
 void decode_string();
 Element* decode();
 int main(){
-    char * filename="../res/demo.txt";
-    char * data=read(filename);
+    char*   filename="../res/demo.txt";
+    char*   data=read(filename);
+    char*   key;
+    Element* value;
     set_buff(data);
-    struct  Element* e= decode();
-    List* start=e->value.list;
-
+    Element* e= decode();
+    if(e==NULL){
+        printf("NULL response returned from decoder\n");
+    
+    }
+    Dict* start=e->value.dict;
+    
     while(start!=NULL){
-        if(start->elements->type==STRING){
-            printf("The string is: %s\n",start->elements->value.str);
-        }else{
-        
-            printf("The number is:%lld\n",start->elements->value.num);
-        }
-
+        key=start->key;
+        printf("key is :%s\n",key);
+        value=start->value;
+        printf("value is:%lld\n",value->value.num);
         start=start->next;
     }
     return 0;
 }
-
