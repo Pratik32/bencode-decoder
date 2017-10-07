@@ -33,7 +33,8 @@ struct Element* decode(){
     struct Element* e;
     switch(c){
         case 'd':
-            
+            printf("Dictionary\n");
+            e=decode();
             break;
         case 'i':
             printf("Number \n");
@@ -57,22 +58,48 @@ struct Element* decode(){
 }
 
 Element* decode_dictionary(){
+    printf("Inside decode_dictionary()\n");
+    Element* result=(Element*)malloc(sizeof(Element));
     Dict* start =(Dict*)malloc(sizeof(Dict));
+    Element* e;
+    Element* str_e;
+    Element* value;
+    char*    key;
+    Dict*    prev;
+    Dict*    curr;
 
     curr_byte=get_next_byte();
     if(curr_byte=='e'){
-        
-    
-    
+        result->type=DICT;
+        return result;
+
+    }else{
+
+        str_e=decode();
+        key=str_e->value.str;
+        value=decode();
+        start->key=key;
+        start->value=value;
+        result->type=DICT; 
+
     }
-    printf("Inside decode_dictionary()\n");
-
+    prev=start;
+    while((curr_byte=get_next_byte())!='e'){
+        pos--;
+        str_e=decode();
+        key=str_e->value.str;
+        value=decode();
+        curr=(Dict*)malloc(sizeof(Dict));
+        curr->key=key;
+        curr->value=value;
+        prev->next=curr;
+        prev=prev->next;
+    }
+    result->value.dict=start;
+    return result;
     
-    
-
-
-
 }
+
 Element* decode_string(){
     printf("Inside decode_string\n");
     Element* number =decode_number();
@@ -138,7 +165,7 @@ struct Element* decode_list(){
         curr->elements=e;
         curr->next=NULL;
         prev->next=curr;
-        prev=curr;
+        prev=prev->next;
     }
 
     result->type=LIST;
