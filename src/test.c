@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include "myheader.h"
+#include "bencodeutils.h"
 void set_buff(char *);
 void decode_number();
 void decode_string();
@@ -9,6 +10,7 @@ int main(){
     char*   data=read(filename);
     char*   key;
     Element* value;
+    //torrent_meta meta;
     set_buff(data);
     Element* e= decode();
     if(e==NULL){
