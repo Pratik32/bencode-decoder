@@ -5,7 +5,7 @@ void decode_number();
 void decode_string();
 Element* decode();
 int main(){
-    char*   filename="../res/demo.txt";
+    char*   filename="../res/2.torrent";
     char*   data=read(filename);
     char*   key;
     Element* value;

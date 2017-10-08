@@ -1,7 +1,5 @@
 /*
- *
  *Decoder for bencode format.
- *
  *
  */
 
@@ -10,13 +8,12 @@
 #include<string.h>
 #include<stdlib.h>
 #include "myheader.h"
-char*   data;
-int     pos;
-char    curr_byte;
+char*          data;
+int            pos;
+char           curr_byte;
+extern long    filelen;
 
-//Represents the first value of the entire dictionary.
-
-//  Function declarations.
+//Function declarations.
 
 Element* decode_string();
 Element* decode_number();
@@ -24,9 +21,6 @@ Element* decode_list();
 Element* decode_dictionary();
 char get_next_byte();
 void set_buff(char*);
-
-
-
 
 struct Element* decode(){
     char c=get_next_byte();
@@ -52,9 +46,8 @@ struct Element* decode(){
             e=decode_string();
             break;
     }
+
     return e;
-
-
 }
 
 Element* decode_dictionary(){
@@ -81,7 +74,6 @@ Element* decode_dictionary(){
     }else{
         result->type=DICT;
         return result;
-
     }
     prev=start;
     while((curr_byte=get_next_byte())!='e'){
@@ -96,16 +88,20 @@ Element* decode_dictionary(){
         prev=prev->next;
     }
     result->value.dict=start;
-    return result;
-    
+    return result;   
 }
 
 Element* decode_string(){
     printf("Inside decode_string\n");
-    Element* number =decode_number();
-    long long strlen=number->value.num;
-    int i=0;
-    char * str=(char*)malloc(strlen+1);
+    long long strlen;
+    int       i=0;
+    char*     str;
+    Element*  number;
+    Element*  e;
+
+    number=decode_number();
+    strlen=number->value.num;
+    str=(char*)malloc(strlen+1);
     while(i<strlen){
         curr_byte=get_next_byte();
         str[i]=curr_byte;
@@ -113,18 +109,21 @@ Element* decode_string(){
     }
     str[i]='\0';
     printf("String is %s\n",str);
-    Element* e=(Element*)malloc(sizeof(Element));
+    e=(Element*)malloc(sizeof(Element));
     e->type=STRING;
     e->value.str=str;
     return e;
 }
 
 struct Element* decode_number(){    
+    int       curr;
+    long long res;
+    int       prev;
+    Element*  e;
     curr_byte=get_next_byte();
-    int curr=curr_byte-'0';
-    long long res=curr;
-    int prev=0;
-
+    curr=curr_byte-'0';
+    res=curr;
+    prev=0;
     while(curr>=0 && curr<=9){
         res=curr+prev*10;
         curr_byte=get_next_byte();
@@ -132,18 +131,23 @@ struct Element* decode_number(){
         prev=res;
     }
     printf("The number is: %lld\n",res);
-    struct Element* e=(Element*)malloc(sizeof(Element));
+    e=(Element*)malloc(sizeof(Element));
     e->type=INT;
     e->value.num=res;
     return e;
-
 }
 
 struct Element* decode_list(){
+    List*    start;
+    Element* e;
+    Element* result;
+    List*    prev;
+    List*    curr;
+
     printf("Inside decode_list\n"); 
-    List* start=(List*)malloc(sizeof(List));
-    Element* e=NULL;
-    Element* result=(Element*)malloc(sizeof(Element));
+    start=(List*)malloc(sizeof(List));
+    e=NULL;
+    result=(Element*)malloc(sizeof(Element));
     curr_byte=get_next_byte();
     if(curr_byte!='e'){
         pos--;
@@ -155,8 +159,8 @@ struct Element* decode_list(){
         result->value.list=NULL;
         return result;
     }
-    List* prev=start;
-    List* curr=NULL;
+    prev=start;
+    curr=NULL;
 
     while((curr_byte=get_next_byte())!='e'){
         pos--;
@@ -174,7 +178,7 @@ struct Element* decode_list(){
 
 }
 char get_next_byte(){
-    if(pos>=strlen(data)){
+    if(pos>=filelen){
         printf("End of file\n");
         return -1;
     }
