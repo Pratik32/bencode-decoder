@@ -48,3 +48,8 @@ typedef struct Element{
 
 char* read(char*);
 
+#define DEBUG(x)    printf(x);
+
+#define LVALUE(list)  list->elements->value.str;  
+                    
+

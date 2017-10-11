@@ -8,6 +8,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include "myheader.h"
+#include "bencodeutils.h"
 char*          data;
 int            pos;
 char           curr_byte;
@@ -188,4 +189,53 @@ char get_next_byte(){
 void set_buff(char * buff){
     printf("Buffer set with size %d\n",strlen(buff));
     data=buff;
+}
+
+
+// Methods for accessing torrent meta data.
+
+
+
+/*  Create a torrent_meta structure from given file.
+ *  Currently implmenting map using struct+linkedlist
+ *  Will come up with better idea about maps in C. 
+ */
+
+torrent_meta* get_torrent_meta(char* data){
+    Dict*         map_root;
+    torrent_meta* meta;
+    char**        announce_list;
+    char*         announce_url;
+    Element*      tmp_ele;
+    List*         list;
+    char*         tmp_str;
+    
+    Element* root = decode(data);
+    map_root = root->value.dict;
+    
+    announce_url = root->value.str;
+
+    if(map_root->next == NULL){
+        DEBUG("No announce list found\n");
+    }
+    tmp_ele = map_root->next->value;
+
+    list = tmp_ele->value.list;
+    
+    /*
+     * Iterate over the list and get all the announce urls.
+     */
+    while(list != NULL){
+
+        tmp_str = LVALUE(list);
+        printf("url is : %s \n",tmp_str);
+        list=list->next;
+    }
+    
+    
+    
+
+
+
+
 }
