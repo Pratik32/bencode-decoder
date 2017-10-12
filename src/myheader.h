@@ -48,7 +48,7 @@ typedef struct Element{
 
 char* read(char*);
 
-#define DEBUG(x)    printf(x);
+#define DEBUG(file,fmt,args...)    printf("DEBUG: %s:%d:%s(): " fmt,file,__LINE__,__func__,##args)
 
 #define LVALUE(list)  list->elements->value.str;  
                     

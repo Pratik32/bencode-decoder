@@ -12,7 +12,7 @@ typedef struct torrent_meta{
     char** annouce_list;
 }torrent_meta;
 
-torrent_meta* get_torrent_meta(char*);
+//torrent_meta* get_torrent_meta(char*);
 
 char* get_announce_list();
 char* get_info_hash();

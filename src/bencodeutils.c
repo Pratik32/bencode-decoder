@@ -212,21 +212,16 @@ torrent_meta* get_torrent_meta(char* data){
     
     Element* root = decode(data);
     map_root = root->value.dict;
-    
     announce_url = root->value.str;
-
     if(map_root->next == NULL){
-        DEBUG("No announce list found\n");
+       DEBUG("bencodeutils.c","announce list not found %c \n",'c');
     }
     tmp_ele = map_root->next->value;
-
     list = tmp_ele->value.list;
-    
     /*
      * Iterate over the list and get all the announce urls.
      */
     while(list != NULL){
-
         tmp_str = LVALUE(list);
         printf("url is : %s \n",tmp_str);
         list=list->next;
