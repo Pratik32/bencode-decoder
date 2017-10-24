@@ -186,11 +186,6 @@ char get_next_byte(){
     return data[pos++];
 
 }
-void set_buff(char * buff){
-    printf("Buffer set with size %d\n",strlen(buff));
-    data=buff;
-}
-
 
 // Methods for accessing torrent meta data.
 
@@ -209,8 +204,8 @@ torrent_meta* get_torrent_meta(char* data){
     Element*      tmp_ele;
     List*         list;
     char*         tmp_str;
-    
-    Element* root = decode(data);
+    set_buff(data);
+    Element* root = decode();
     map_root = root->value.dict;
     announce_url = root->value.str;
     if(map_root->next == NULL){
@@ -221,16 +216,18 @@ torrent_meta* get_torrent_meta(char* data){
     /*
      * Iterate over the list and get all the announce urls.
      */
+    List* temp_list = list->elements->value.list;
+    printf("Type of the element is:%d \n and value is:%s \n",temp_list->elements->type,temp_list->elements->value.str);
     while(list != NULL){
         tmp_str = LVALUE(list);
-        printf("url is : %s \n",tmp_str);
+        printf("length of the url is: %d\nurl is : %s \n",strlen(tmp_str),tmp_str);
         list=list->next;
     }
     
     
-    
+    return meta;
+}
 
-
-
-
+void set_buff(char* buff){
+    data = buff;
 }
