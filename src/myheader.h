@@ -50,6 +50,6 @@ char* read(char*);
 
 #define DEBUG(file,fmt,args...)    printf("DEBUG: %s:%d:%s(): " fmt,file,__LINE__,__func__,##args)
 
-#define LVALUE(list)  list->elements->value.str;  
-                    
+#define LVALUE(list)  list->elements->value.str  
+#define NEXT_LIST(e)  e->elements->value.list                  
 

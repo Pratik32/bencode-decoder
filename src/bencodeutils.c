@@ -204,6 +204,8 @@ torrent_meta* get_torrent_meta(char* data){
     Element*      tmp_ele;
     List*         list;
     char*         tmp_str;
+    List*         tmp_list;
+    int           i;
     set_buff(data);
     Element* root = decode();
     map_root = root->value.dict;
@@ -212,19 +214,23 @@ torrent_meta* get_torrent_meta(char* data){
        DEBUG("bencodeutils.c","announce list not found %c \n",'c');
     }
     tmp_ele = map_root->next->value;
-    list = tmp_ele->value.list;
-    /*
-     * Iterate over the list and get all the announce urls.
+
+    /* Announce-list is list of list,with each sublist containing
+     * one string item(i.e url).
      */
-    List* temp_list = list->elements->value.list;
-    printf("Type of the element is:%d \n and value is:%s \n",temp_list->elements->type,temp_list->elements->value.str);
-    while(list != NULL){
-        tmp_str = LVALUE(list);
-        printf("length of the url is: %d\nurl is : %s \n",strlen(tmp_str),tmp_str);
-        list=list->next;
+    list = tmp_ele->value.list;
+    announce_list = (char**)malloc(sizeof(char*));
+    i = 1;
+    while(list != NULL) {
+        tmp_list = NEXT_LIST(list);
+        tmp_str = LVALUE(tmp_list);
+        announce_list = (char**)realloc(announce_list,sizeof(char*)*i);
+        announce_list[i] = (char*)malloc(strlen(tmp_str));
+        list = list->next;
+        i++;
     }
     
-    
+
     return meta;
 }
 
