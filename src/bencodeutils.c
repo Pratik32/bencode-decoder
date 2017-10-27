@@ -225,7 +225,9 @@ torrent_meta* get_torrent_meta(char* data){
         tmp_list = NEXT_LIST(list);
         tmp_str = LVALUE(tmp_list);
         announce_list = (char**)realloc(announce_list,sizeof(char*)*i);
-        announce_list[i] = (char*)malloc(strlen(tmp_str));
+        announce_list[i-1] = (char*)malloc(strlen(tmp_str));
+        announce_list[i-1] = tmp_str;
+        printf("url is %s : \n",announce_list[i-1]);
         list = list->next;
         i++;
     }
