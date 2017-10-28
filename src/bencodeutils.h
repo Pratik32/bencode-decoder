@@ -1,8 +1,13 @@
+struct file;
+typedef struct file{
+    char* name;
+    long  len;
+}file;
 
 //Represent a torrent file.
 typedef struct torrent_meta{
 
-    char*  filename;
+    file**  file;
     long   tsize;
     char*  pieces;
     char*  info_hash;

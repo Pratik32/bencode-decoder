@@ -208,6 +208,10 @@ torrent_meta* get_torrent_meta(char* data){
     int           i;
     long          date;
     char*         str_date;
+    Dict*         info_dir;
+    Dict*         dict;
+    file**        files;
+    long          tmp_num;
     set_buff(data);
 
     meta = (torrent_meta*)malloc(sizeof(torrent_meta));
@@ -248,7 +252,52 @@ torrent_meta* get_torrent_meta(char* data){
         str_date = epoch_to_string(date);
         DEBUG("bencodeutil.c","date is: %s\n",str_date);
     }
-    return meta;
+    
+    map_root = map_root->next;
+    if (strcmp(map_root->key,"info") != 0) {
+        DEBUG("bencodeutils.c","Incomplete torrent file\n");
+        goto out;
+    }
+
+    info_dir = map_root->value->value.dict;
+    
+    //Single file mode.
+    files = (file**)malloc(sizeof(file*));
+
+    if (strcmp(info_dir->key,"length") == 0) {
+    
+        tmp_num = info_dir->value->value.num;
+        map_root = map_root->next;
+        tmp_str = info_dir->value->value.str;
+        files[0]->name = tmp_str;
+        files[0]->len = tmp_num;
+            
+    }else if (strcmp(info_dir->key,"files") == 0) { 
+        
+        list = info_dir->value->value.list;
+        
+        i = 1;
+        while(list != NULL){
+        
+            dict = list->elements->value.dict;
+            tmp_num = dict->value->value.num;
+            dict = dict->next;
+            tmp_str = dict->value->value.list->elements->value.str;
+            files = (file**)EXTEND_SIZE(files,i);
+            files[i-1]->name = tmp_str;
+            files[i-1]->len = tmp_num;
+            list = list->next;
+        
+        }
+        
+    meta->file = files;
+    
+    
+    
+    
+    }
+
+out:  return meta;
 }
 
 void set_buff(char* buff){
