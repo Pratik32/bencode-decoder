@@ -206,15 +206,19 @@ torrent_meta* get_torrent_meta(char* data){
     char*         tmp_str;
     List*         tmp_list;
     int           i;
+    long          date;
+    char*         str_date;
     set_buff(data);
+
+    meta = (torrent_meta*)malloc(sizeof(torrent_meta));
     Element* root = decode();
     map_root = root->value.dict;
     announce_url = root->value.str;
     if(map_root->next == NULL){
-       DEBUG("bencodeutils.c","announce list not found %c \n",'c');
+       DEBUG("bencodeutils.c","announce list not found\n");
     }
     tmp_ele = map_root->next->value;
-
+    map_root = map_root->next;
     /* Announce-list is list of list,with each sublist containing
      * one string item(i.e url).
      */
@@ -230,8 +234,20 @@ torrent_meta* get_torrent_meta(char* data){
         list = list->next;
         i++;
     }
-    
+    meta->announce_list = announce_list;
+    map_root = map_root->next;
+    DEBUG("bencodeutils.c","next key is:%s\n",map_root->key);
+    if (strcmp(map_root->key,"comment") == 0) {
+        //skip comments.
+        DEBUG("bencodeutils.c","skipping comments\n");
+        map_root = map_root->next;
+    }
 
+    if (strcmp(map_root->key,"creation date") == 0) {
+        date = map_root->value->value.num;
+        str_date = epoch_to_string(date);
+        DEBUG("bencodeutil.c","date is: %s\n",str_date);
+    }
     return meta;
 }
 

@@ -9,7 +9,8 @@ typedef struct torrent_meta{
     char*  folder;
     char** piece_hash;
     int    tpieces;
-    char** annouce_list;
+    char** announce_list;
+    char*  date;
 }torrent_meta;
 
 //torrent_meta* get_torrent_meta(char*);

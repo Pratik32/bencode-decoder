@@ -47,10 +47,12 @@ typedef struct Element{
 }Element;
 
 char* read(char*);
-
+char* epoch_to_string(long);
 #define DEBUG(file,fmt,args...)    printf("DEBUG: %s:%d:%s(): " fmt,file,__LINE__,__func__,##args)
 
 #define LVALUE(list)  list->elements->value.str  
 #define NEXT_LIST(e)  e->elements->value.list                  
 
 #define EXTEND_SIZE(ptr,size)  (char**)realloc(ptr,sizeof(char*)*size);
+
+
