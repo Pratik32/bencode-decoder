@@ -53,3 +53,4 @@ char* read(char*);
 #define LVALUE(list)  list->elements->value.str  
 #define NEXT_LIST(e)  e->elements->value.list                  
 
+#define EXTEND_SIZE(ptr,size)  (char**)realloc(ptr,sizeof(char*)*size);
