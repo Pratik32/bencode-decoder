@@ -6,7 +6,7 @@ void decode_number();
 void decode_string();
 Element* decode();
 int main(){
-    char*   filename="../res/ubuntu.torrent";
+    char*   filename="../res/stub.torrent";
     char*   data=read(filename);
     char*   key;
     Element* value;

@@ -241,41 +241,43 @@ torrent_meta* get_torrent_meta(char* data){
     meta->announce_list = announce_list;
     map_root = map_root->next;
     DEBUG("bencodeutils.c","next key is:%s\n",map_root->key);
-    if (strcmp(map_root->key,"comment") == 0) {
-        //skip comments.
-        DEBUG("bencodeutils.c","skipping comments\n");
+    while (strcmp(map_root->key,"creation date") != 0) {
+        //skipping some unnecessary part.
+        DEBUG("bencodeutils.c","skipping %s\n",map_root->key);
         map_root = map_root->next;
     }
 
-    if (strcmp(map_root->key,"creation date") == 0) {
-        date = map_root->value->value.num;
-        str_date = epoch_to_string(date);
-        DEBUG("bencodeutil.c","date is: %s\n",str_date);
-    }
+    date = map_root->value->value.num;
+    str_date = epoch_to_string(date);
+    DEBUG("bencodeutil.c","date is: %s\n",str_date);
     
     map_root = map_root->next;
+    while(strcmp(map_root->key,"info") != 0) {
+        //skip enconding.
+        map_root = map_root->next;
+    }
     if (strcmp(map_root->key,"info") != 0) {
         DEBUG("bencodeutils.c","Incomplete torrent file\n");
         goto out;
     }
-
+    
     info_dir = map_root->value->value.dict;
     
-    //Single file mode.
+   
     files = (file**)malloc(sizeof(file*));
-
+     //Single file mode.
     if (strcmp(info_dir->key,"length") == 0) {
-    
+        DEBUG("bencodeutils.c","Single file mode.");
         tmp_num = info_dir->value->value.num;
-        map_root = map_root->next;
+        info_dir = info_dir->next;
         tmp_str = info_dir->value->value.str;
         files[0]->name = tmp_str;
         files[0]->len = tmp_num;
+        DEBUG("bencodeutils.c","info: %s %ld \n",tmp_str,tmp_num);
             
     }else if (strcmp(info_dir->key,"files") == 0) { 
-        
+        DEBUG("bencodeutils.c","Multiple files mode\n");
         list = info_dir->value->value.list;
-        
         i = 1;
         while(list != NULL){
         
@@ -286,18 +288,16 @@ torrent_meta* get_torrent_meta(char* data){
             files = (file**)EXTEND_SIZE(files,i);
             files[i-1]->name = tmp_str;
             files[i-1]->len = tmp_num;
+            DEBUG("bencodeutils.c","name:%s len:%ld\n",
+            files[i-1]->name,files[i-1]->len);
             list = list->next;
-        
+            i++;
         }
         
-    meta->file = files;
-    
-    
-    
-    
     }
 
-out:  return meta;
+    meta->file = files;
+out:return meta;
 }
 
 void set_buff(char* buff){
