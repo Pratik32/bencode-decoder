@@ -7,13 +7,14 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<math.h>
 #include "myheader.h"
 #include "bencodeutils.h"
 char*          data;
 int            pos;
 char           curr_byte;
 extern long    filelen;
-
+long           pieces_len;
 //Function declarations.
 
 Element* decode_string();
@@ -199,7 +200,7 @@ char get_next_byte(){
 torrent_meta* get_torrent_meta(char* data){
     Dict*         map_root;
     torrent_meta* meta;
-    char**        announce_list;
+    char**        announce_list,piece_hash;
     char*         announce_url;
     Element*      tmp_ele;
     List*         list;
@@ -273,6 +274,7 @@ torrent_meta* get_torrent_meta(char* data){
         tmp_str = info_dir->value->value.str;
         files[0]->name = tmp_str;
         files[0]->len = tmp_num;
+        meta->tsize = tmp_num;
         DEBUG("bencodeutils.c","info: %s %ld \n",tmp_str,tmp_num);
             
     }else if (strcmp(info_dir->key,"files") == 0) { 
@@ -288,6 +290,7 @@ torrent_meta* get_torrent_meta(char* data){
             files = (file**)EXTEND_SIZE(files,i);
             files[i-1]->name = tmp_str;
             files[i-1]->len = tmp_num;
+            meta->tsize += tmp_num;
             DEBUG("bencodeutils.c","name:%s len:%ld\n",
             files[i-1]->name,files[i-1]->len);
             list = list->next;
@@ -295,8 +298,12 @@ torrent_meta* get_torrent_meta(char* data){
         }
         
     }
-
     meta->file = files;
+    info_dir = info_dir->next;
+    meta->piece_len = info_dir->value->value.num;
+    info_dir = info_dir->next;
+    tmp_num  = (int)floor(meta->tsize / meta->piece_len);
+    DEBUG("bencodeutils.c","pieces %ld\n",tmp_num);
 out:return meta;
 }
 

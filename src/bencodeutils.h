@@ -7,15 +7,15 @@ typedef struct file{
 //Represent a torrent file.
 typedef struct torrent_meta{
 
-    file**  file;
+    file** file;
     long   tsize;
-    char*  pieces;
+    long   tpieces;
     char*  info_hash;
     char*  folder;
     char** piece_hash;
-    int    tpieces;
     char** announce_list;
     char*  date;
+    long   piece_len;
 }torrent_meta;
 
 //torrent_meta* get_torrent_meta(char*);
